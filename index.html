@@ -198,8 +198,8 @@
         }
 
         .next-btn {
-            padding: 15px 40px;
-            font-size: 1.2em;
+            padding: 15px 30px;
+            font-size: 1.3em;
             font-family: inherit;
             border: none;
             border-radius: 25px;
@@ -215,7 +215,7 @@
         }
 
         .next-btn:hover {
-            transform: translateY(-3px);
+            transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
         }
 
@@ -468,6 +468,11 @@
                 font-size: 1em;
             }
 
+            .next-btn {
+                padding: 8px 15px;
+                font-size: 1em;
+            }
+
             .number-pad {
                 max-width: 200px;
                 gap: 6px;
@@ -494,11 +499,6 @@
                 font-size: 1.1em;
                 padding: 8px;
                 margin: 8px 0;
-            }
-
-            .next-btn {
-                padding: 10px 25px;
-                font-size: 1em;
             }
         }
 
@@ -610,6 +610,7 @@
                    autocomplete="off"
                    readonly>
             <button class="check-btn" onclick="checkAnswer()">Kontrolli! ✓</button>
+            <button class="next-btn" id="next-btn" onclick="newRound()">Järgmine →</button>
         </div>
 
         <div class="number-pad">
@@ -628,8 +629,6 @@
         </div>
 
         <div class="feedback" id="feedback"></div>
-        
-        <button class="next-btn" id="next-btn" onclick="newRound()">Järgmine kell →</button>
     </div>
 
     <div class="animal-popup" id="animal-popup">
