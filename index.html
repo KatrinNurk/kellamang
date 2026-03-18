@@ -501,6 +501,63 @@
                 font-size: 1em;
             }
         }
+
+        /* Dancing Animal Popup */
+        .animal-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .animal-popup.show {
+            display: flex;
+        }
+
+        .animal-container {
+            text-align: center;
+            animation: popIn 0.5s ease;
+        }
+
+        .dancing-animal {
+            font-size: 120px;
+            animation: dance 0.5s ease-in-out infinite;
+        }
+
+        .animal-message {
+            color: white;
+            font-size: 2em;
+            margin-top: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        @keyframes dance {
+            0%, 100% { transform: rotate(-10deg) scale(1); }
+            25% { transform: rotate(10deg) scale(1.1); }
+            50% { transform: rotate(-10deg) scale(1); }
+            75% { transform: rotate(10deg) scale(1.1); }
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @media (max-width: 500px) {
+            .dancing-animal {
+                font-size: 80px;
+            }
+            .animal-message {
+                font-size: 1.5em;
+            }
+        }
     </style>
 </head>
 <body>
@@ -575,6 +632,13 @@
         <button class="next-btn" id="next-btn" onclick="newRound()">Järgmine kell →</button>
     </div>
 
+    <div class="animal-popup" id="animal-popup">
+        <div class="animal-container">
+            <div class="dancing-animal" id="dancing-animal"></div>
+            <div class="animal-message">Tubli! 5 õiget!</div>
+        </div>
+    </div>
+
     <script>
         // Game state
         let currentHour = 0;
@@ -584,6 +648,23 @@
         let total = 0;
         let streak = 0;
         let answered = false;
+        let lastCelebration = 0;
+
+        // Dancing animals pool
+        const dancingAnimals = ['🐶', '🐱', '🐰', '🦁', '🐼'];
+
+        // Show dancing animal celebration
+        function showDancingAnimal() {
+            const popup = document.getElementById('animal-popup');
+            const animalEl = document.getElementById('dancing-animal');
+            const randomAnimal = dancingAnimals[Math.floor(Math.random() * dancingAnimals.length)];
+            animalEl.textContent = randomAnimal;
+            popup.classList.add('show');
+            
+            setTimeout(() => {
+                popup.classList.remove('show');
+            }, 5000);
+        }
 
         // Number pad functions
         function addNumber(num) {
@@ -749,6 +830,12 @@
                 ];
                 feedback.textContent = encouragements[Math.floor(Math.random() * encouragements.length)];
                 feedback.className = 'feedback show success';
+                
+                // Show dancing animal every 5 correct answers
+                if (correct % 5 === 0 && correct > lastCelebration) {
+                    lastCelebration = correct;
+                    setTimeout(() => showDancingAnimal(), 500);
+                }
             } else {
                 input.classList.add('wrong');
                 streak = 0;
