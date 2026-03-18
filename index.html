@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="et">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⏰ Õpi kella lugema!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Chalkboard', cursive;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        h1 {
+            color: white;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .game-container {
+            background: white;
+            border-radius: 30px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .clock-container {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            margin: 20px auto;
+        }
+
+        .clock {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #ffffff, #e6e6e6);
+            box-shadow: 
+                0 0 0 8px #4a5568,
+                0 0 0 12px #2d3748,
+                inset 0 0 30px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .clock-face {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            height: 90%;
+        }
+
+        .number {
+            position: absolute;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2d3748;
+            transform: translate(-50%, -50%);
+        }
+
+        .tick {
+            position: absolute;
+            background: #718096;
+            transform-origin: center bottom;
+        }
+
+        .tick-minute {
+            width: 2px;
+            height: 8px;
+        }
+
+        .tick-hour {
+            width: 3px;
+            height: 12px;
+            background: #4a5568;
+        }
+
+        .hand {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            transform-origin: bottom center;
+            border-radius: 10px;
+        }
+
+        .hour-hand {
+            width: 8px;
+            height: 70px;
+            background: #2d3748;
+            margin-left: -4px;
+            z-index: 3;
+        }
+
+        .minute-hand {
+            width: 6px;
+            height: 100px;
+            background: #4a5568;
+            margin-left: -3px;
+            z-index: 2;
+        }
+
+        .center-dot {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 16px;
+            height: 16px;
+            background: #ff6b6b;
+            border-radius: 50%;
+            z-index: 4;
+        }
+
+        .question {
+            font-size: 1.5em;
+            color: #2d3748;
+            margin: 20px 0;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .score-board {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f7fafc;
+            border-radius: 15px;
+        }
+
+        .score-item {
+            text-align: center;
+        }
+
+        .score-label {
+            font-size: 0.9em;
+            color: #718096;
+        }
+
+        .score-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .feedback {
+            font-size: 1.5em;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 15px;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .feedback.success {
+            background: #c6f6d5;
+            color: #276749;
+        }
+
+        .feedback.error {
+            background: #fed7d7;
+            color: #c53030;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .next-btn {
+            padding: 15px 40px;
+            font-size: 1.2em;
+            font-family: inherit;
+            border: none;
+            border-radius: 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: none;
+        }
+
+        .next-btn.show {
+            display: inline-block;
+        }
+
+        .next-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Time Input Styles */
+        .time-input-container {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .time-text-input {
+            padding: 15px 20px;
+            font-size: 2em;
+            font-family: inherit;
+            border: 4px solid #667eea;
+            border-radius: 15px;
+            background: white;
+            color: #667eea;
+            width: 160px;
+            text-align: center;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .time-text-input:focus {
+            border-color: #764ba2;
+            box-shadow: 0 0 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .time-text-input.correct {
+            border-color: #48bb78;
+            background: #c6f6d5;
+            animation: bounce 0.5s ease;
+        }
+
+        .time-text-input.wrong {
+            border-color: #fc8181;
+            background: #fed7d7;
+            animation: shake 0.5s ease;
+        }
+
+        .check-btn {
+            padding: 15px 30px;
+            font-size: 1.3em;
+            font-family: inherit;
+            border: none;
+            border-radius: 25px;
+            background: #48bb78;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .check-btn:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(72, 187, 120, 0.4);
+        }
+
+        .difficulty-selector {
+            margin: 15px 0;
+        }
+
+        .difficulty-selector label {
+            margin-right: 10px;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .difficulty-selector select {
+            padding: 8px 15px;
+            font-size: 1em;
+            font-family: inherit;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            background: white;
+            color: #667eea;
+        }
+
+        .streak {
+            font-size: 1.2em;
+            color: #f6ad55;
+            margin: 10px 0;
+        }
+
+        .streak-fire {
+            animation: pulse 0.5s ease infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.2); }
+        }
+
+        .instructions {
+            background: #e2e8f0;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            color: #4a5568;
+        }
+
+        .format-hint {
+            font-size: 0.9em;
+            color: #718096;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>⏰ Õpi kella lugema!</h1>
+
+    <div class="game-container">
+        <div class="difficulty-selector">
+            <label>Raskusaste:</label>
+            <select id="difficulty" onchange="newRound()">
+                <option value="easy">Lihtne (Ainult tunnid)</option>
+                <option value="medium">Keskmine (Pooltunnid)</option>
+                <option value="hard" selected>Raske (5-minutilised vahemikud)</option>
+                <option value="expert">Ekspert (Iga minut)</option>
+            </select>
+        </div>
+
+        <div class="instructions">
+            Vaata kella ja kirjuta aeg, mida näed!
+        </div>
+
+        <div class="score-board">
+            <div class="score-item">
+                <div class="score-label">Punktid</div>
+                <div class="score-value" id="score">0</div>
+            </div>
+            <div class="score-item">
+                <div class="score-label">Õiged</div>
+                <div class="score-value" id="correct">0</div>
+            </div>
+            <div class="score-item">
+                <div class="score-label">Kokku</div>
+                <div class="score-value" id="total">0</div>
+            </div>
+        </div>
+
+        <div class="streak" id="streak"></div>
+
+        <div class="clock-container">
+            <div class="clock">
+                <div class="clock-face" id="clock-face"></div>
+                <div class="hand hour-hand" id="hour-hand"></div>
+                <div class="hand minute-hand" id="minute-hand"></div>
+                <div class="center-dot"></div>
+            </div>
+        </div>
+
+        <div class="question">Mis kell on?</div>
+
+        <div class="time-input-container">
+            <input type="text" 
+                   class="time-text-input" 
+                   id="time-input" 
+                   placeholder="6.50"
+                   maxlength="5"
+                   autocomplete="off">
+            <button class="check-btn" onclick="checkAnswer()">Kontrolli! ✓</button>
+        </div>
+        
+        <div class="format-hint">Kirjuta aeg nii: 6.50 või 12.05</div>
+
+        <div class="feedback" id="feedback"></div>
+        
+        <button class="next-btn" id="next-btn" onclick="newRound()">Järgmine kell →</button>
+    </div>
+
+    <script>
+        // Game state
+        let currentHour = 0;
+        let currentMinute = 0;
+        let score = 0;
+        let correct = 0;
+        let total = 0;
+        let streak = 0;
+        let answered = false;
+
+        // Initialize clock face with numbers and tick marks
+        function initClockFace() {
+            const clockFace = document.getElementById('clock-face');
+            clockFace.innerHTML = '';
+            
+            // Add minute tick marks (60 marks)
+            for (let i = 0; i < 60; i++) {
+                const tick = document.createElement('div');
+                const isHourMark = i % 5 === 0;
+                tick.className = isHourMark ? 'tick tick-hour' : 'tick tick-minute';
+                
+                const angle = i * 6; // 360/60 = 6 degrees per minute
+                const tickHeight = isHourMark ? 12 : 8;
+                const radius = 48; // percentage from center
+                
+                // Position at the edge of the clock
+                const angleRad = (angle - 90) * (Math.PI / 180);
+                const x = 50 + radius * Math.cos(angleRad);
+                const y = 50 + radius * Math.sin(angleRad);
+                
+                tick.style.left = x + '%';
+                tick.style.top = y + '%';
+                tick.style.transform = `translate(-50%, -100%) rotate(${angle}deg)`;
+                
+                clockFace.appendChild(tick);
+            }
+            
+            // Add hour numbers
+            for (let i = 1; i <= 12; i++) {
+                const angle = (i * 30 - 90) * (Math.PI / 180);
+                const radius = 38;
+                const x = 50 + radius * Math.cos(angle);
+                const y = 50 + radius * Math.sin(angle);
+                
+                const number = document.createElement('div');
+                number.className = 'number';
+                number.textContent = i;
+                number.style.left = x + '%';
+                number.style.top = y + '%';
+                clockFace.appendChild(number);
+            }
+        }
+
+        // Set clock hands
+        function setClockHands(hour, minute) {
+            const hourHand = document.getElementById('hour-hand');
+            const minuteHand = document.getElementById('minute-hand');
+            
+            const minuteAngle = minute * 6;
+            const hourAngle = (hour % 12) * 30 + minute * 0.5;
+            
+            hourHand.style.transform = `rotate(${hourAngle}deg)`;
+            minuteHand.style.transform = `rotate(${minuteAngle}deg)`;
+        }
+
+        // Generate random time based on difficulty
+        function generateTime() {
+            const difficulty = document.getElementById('difficulty').value;
+            let hour = Math.floor(Math.random() * 12) + 1;
+            let minute = 0;
+            
+            switch (difficulty) {
+                case 'easy':
+                    minute = 0;
+                    break;
+                case 'medium':
+                    minute = Math.random() < 0.5 ? 0 : 30;
+                    break;
+                case 'hard':
+                    minute = Math.floor(Math.random() * 12) * 5;
+                    break;
+                case 'expert':
+                    minute = Math.floor(Math.random() * 60);
+                    break;
+            }
+            
+            return { hour, minute };
+        }
+
+        // Format time as string with period
+        function formatTime(hour, minute) {
+            const h = hour.toString();
+            const m = minute.toString().padStart(2, '0');
+            return `${h}.${m}`;
+        }
+
+        // Parse user input
+        function parseTimeInput(input) {
+            // Clean the input - allow both . and : as separators
+            const cleaned = input.trim().replace(':', '.');
+            const parts = cleaned.split('.');
+            
+            if (parts.length !== 2) {
+                return null;
+            }
+            
+            const hour = parseInt(parts[0], 10);
+            const minute = parseInt(parts[1], 10);
+            
+            if (isNaN(hour) || isNaN(minute)) {
+                return null;
+            }
+            
+            if (hour < 1 || hour > 12 || minute < 0 || minute > 59) {
+                return null;
+            }
+            
+            return { hour, minute };
+        }
+
+        // Check answer
+        function checkAnswer() {
+            if (answered) return;
+            
+            const input = document.getElementById('time-input');
+            const userTime = parseTimeInput(input.value);
+            
+            if (!userTime) {
+                alert('Palun sisesta kehtiv aeg, näiteks 6.50 või 12.05');
+                return;
+            }
+            
+            answered = true;
+            total++;
+            
+            const feedback = document.getElementById('feedback');
+            const isCorrect = userTime.hour === currentHour && userTime.minute === currentMinute;
+            
+            if (isCorrect) {
+                input.classList.add('correct');
+                correct++;
+                streak++;
+                score += 10 * streak;
+                
+                const encouragements = [
+                    "🎉 Fantastiline!",
+                    "⭐ Suurepärane!",
+                    "🌟 Sa oled staar!",
+                    "👏 Tubli!",
+                    "🎊 Väga hea!",
+                    "💪 Super!",
+                    "🏆 Ideaalne!",
+                    "✨ Särav!"
+                ];
+                feedback.textContent = encouragements[Math.floor(Math.random() * encouragements.length)];
+                feedback.className = 'feedback show success';
+            } else {
+                input.classList.add('wrong');
+                streak = 0;
+                
+                const encouragements = [
+                    "😊 Proovi veel!",
+                    "💪 Sa saad hakkama!",
+                    "🌈 Ära anna alla!",
+                    "🎯 Peaaegu!"
+                ];
+                feedback.textContent = `${encouragements[Math.floor(Math.random() * encouragements.length)]} Õige aeg oli ${formatTime(currentHour, currentMinute)}`;
+                feedback.className = 'feedback show error';
+            }
+            
+            updateScore();
+            document.getElementById('next-btn').classList.add('show');
+        }
+
+        // Update score display
+        function updateScore() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('correct').textContent = correct;
+            document.getElementById('total').textContent = total;
+            
+            const streakEl = document.getElementById('streak');
+            if (streak >= 3) {
+                streakEl.innerHTML = `<span class="streak-fire">🔥</span> ${streak} järjest!`;
+            } else {
+                streakEl.textContent = '';
+            }
+        }
+
+        // Start new round
+        function newRound() {
+            answered = false;
+            
+            const time = generateTime();
+            currentHour = time.hour;
+            currentMinute = time.minute;
+            
+            setClockHands(currentHour, currentMinute);
+            
+            const input = document.getElementById('time-input');
+            input.value = '';
+            input.classList.remove('correct', 'wrong');
+            input.focus();
+            
+            document.getElementById('feedback').classList.remove('show');
+            document.getElementById('next-btn').classList.remove('show');
+        }
+
+        // Handle Enter key
+        document.addEventListener('DOMContentLoaded', function() {
+            const input = document.getElementById('time-input');
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    if (answered) {
+                        newRound();
+                    } else {
+                        checkAnswer();
+                    }
+                }
+            });
+        });
+
+        // Initialize game
+        function init() {
+            initClockFace();
+            newRound();
+        }
+
+        // Start the game
+        init();
+    </script>
+</body>
+</html>
