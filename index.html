@@ -232,8 +232,8 @@
         }
 
         .check-btn {
-            padding: 10px 15px;
-            font-size: 1em;
+            padding: 12px 25px;
+            font-size: 1.1em;
             font-family: inherit;
             border: none;
             border-radius: 20px;
@@ -241,6 +241,7 @@
             color: white;
             cursor: pointer;
             transition: all 0.3s ease;
+            margin-top: 10px;
         }
 
         .check-btn:hover {
@@ -328,17 +329,17 @@
         .number-pad {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            max-width: 280px;
-            margin: 20px auto;
+            gap: 8px;
+            max-width: 220px;
+            margin: 10px auto;
         }
 
         .num-btn {
-            padding: 18px;
-            font-size: 1.8em;
+            padding: 12px;
+            font-size: 1.5em;
             font-family: inherit;
-            border: 3px solid #667eea;
-            border-radius: 15px;
+            border: 2px solid #667eea;
+            border-radius: 12px;
             background: white;
             color: #667eea;
             cursor: pointer;
@@ -355,7 +356,7 @@
 
         .num-btn.special {
             background: #f7fafc;
-            font-size: 1.4em;
+            font-size: 1.2em;
         }
 
         .num-btn.special:hover, .num-btn.special:active {
@@ -453,8 +454,9 @@
             }
 
             .check-btn {
-                padding: 6px 10px;
-                font-size: 0.85em;
+                padding: 8px 20px;
+                font-size: 0.9em;
+                margin-top: 6px;
             }
 
             .next-btn {
@@ -463,20 +465,20 @@
             }
 
             .number-pad {
-                max-width: 200px;
-                gap: 6px;
-                margin: 8px auto;
+                max-width: 180px;
+                gap: 5px;
+                margin: 6px auto;
             }
 
             .num-btn {
-                padding: 10px;
-                font-size: 1.3em;
+                padding: 8px;
+                font-size: 1.2em;
                 border-width: 2px;
-                border-radius: 10px;
+                border-radius: 8px;
             }
 
             .num-btn.special {
-                font-size: 1.1em;
+                font-size: 1em;
             }
 
             .format-hint {
@@ -592,7 +594,6 @@
                    maxlength="5"
                    autocomplete="off"
                    readonly>
-            <button class="check-btn" onclick="checkAnswer()">Kontrolli! ✓</button>
             <button class="next-btn" id="next-btn" onclick="newRound()">Järgmine →</button>
         </div>
 
@@ -610,6 +611,8 @@
             <button class="num-btn" onclick="addNumber('0')">0</button>
             <button class="num-btn special" onclick="deleteNumber()">⌫</button>
         </div>
+
+        <button class="check-btn" onclick="checkAnswer()">Kontrolli! ✓</button>
 
         <div class="feedback" id="feedback"></div>
     </div>
