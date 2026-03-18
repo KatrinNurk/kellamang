@@ -145,30 +145,6 @@
             75% { transform: translateX(10px); }
         }
 
-        .score-board {
-            display: flex;
-            justify-content: space-around;
-            margin: 10px 0;
-            padding: 8px;
-            background: #f7fafc;
-            border-radius: 10px;
-        }
-
-        .score-item {
-            text-align: center;
-        }
-
-        .score-label {
-            font-size: 0.7em;
-            color: #718096;
-        }
-
-        .score-value {
-            font-size: 1.2em;
-            font-weight: bold;
-            color: #667eea;
-        }
-
         .feedback {
             font-size: 1.5em;
             padding: 15px;
@@ -274,22 +250,48 @@
         }
 
         .difficulty-selector {
-            margin: 15px 0;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .difficulty-selector label {
-            margin-right: 10px;
-            color: #667eea;
-            font-weight: bold;
+            display: none;
         }
 
         .difficulty-selector select {
-            padding: 8px 15px;
-            font-size: 1em;
+            padding: 6px 12px;
+            font-size: 0.9em;
             font-family: inherit;
             border: 2px solid #667eea;
             border-radius: 10px;
             background: white;
+            color: #667eea;
+        }
+
+        .score-inline {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .score-inline .score-item {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .score-inline .score-label {
+            font-size: 0.8em;
+            color: #718096;
+        }
+
+        .score-inline .score-value {
+            font-size: 1em;
+            font-weight: bold;
             color: #667eea;
         }
 
@@ -380,32 +382,24 @@
 
             .difficulty-selector {
                 margin: 5px 0;
-            }
-
-            .difficulty-selector label {
-                display: none;
+                gap: 8px;
             }
 
             .difficulty-selector select {
-                padding: 5px 10px;
+                padding: 4px 8px;
+                font-size: 0.8em;
+            }
+
+            .score-inline {
+                gap: 10px;
+            }
+
+            .score-inline .score-label {
+                font-size: 0.7em;
+            }
+
+            .score-inline .score-value {
                 font-size: 0.9em;
-            }
-
-            .instructions {
-                display: none;
-            }
-
-            .score-board {
-                margin: 5px 0;
-                padding: 5px;
-            }
-
-            .score-label {
-                font-size: 0.6em;
-            }
-
-            .score-value {
-                font-size: 1em;
             }
 
             .streak {
@@ -560,7 +554,6 @@
 
     <div class="game-container">
         <div class="difficulty-selector">
-            <label>Raskusaste:</label>
             <select id="difficulty" onchange="newRound()">
                 <option value="easy">Täistunnid</option>
                 <option value="medium" selected>Pooltunnid</option>
@@ -568,16 +561,15 @@
                 <option value="hard">5min</option>
                 <option value="expert">Minutid</option>
             </select>
-        </div>
-
-        <div class="score-board">
-            <div class="score-item">
-                <div class="score-label">Õiged</div>
-                <div class="score-value" id="correct">0</div>
-            </div>
-            <div class="score-item">
-                <div class="score-label">Kokku</div>
-                <div class="score-value" id="total">0</div>
+            <div class="score-inline">
+                <div class="score-item">
+                    <span class="score-label">Õiged:</span>
+                    <span class="score-value" id="correct">0</span>
+                </div>
+                <div class="score-item">
+                    <span class="score-label">Kokku:</span>
+                    <span class="score-value" id="total">0</span>
+                </div>
             </div>
         </div>
 
