@@ -512,6 +512,7 @@
             <select id="difficulty" onchange="newRound()">
                 <option value="easy">Lihtne (Ainult tunnid)</option>
                 <option value="medium" selected>Keskmine (Pooltunnid)</option>
+                <option value="quarter">Veerandtunnid (00, 15, 30, 45)</option>
                 <option value="hard">Raske (5-minutilised vahemikud)</option>
                 <option value="expert">Ekspert (Iga minut)</option>
             </select>
@@ -674,6 +675,9 @@
                     break;
                 case 'medium':
                     minute = Math.random() < 0.5 ? 0 : 30;
+                    break;
+                case 'quarter':
+                    minute = [0, 15, 30, 45][Math.floor(Math.random() * 4)];
                     break;
                 case 'hard':
                     minute = Math.floor(Math.random() * 12) * 5;
