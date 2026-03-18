@@ -465,12 +465,12 @@
             <button class="num-btn" onclick="addNumber('7')">7</button>
             <button class="num-btn" onclick="addNumber('8')">8</button>
             <button class="num-btn" onclick="addNumber('9')">9</button>
-            <button class="num-btn special" onclick="addNumber('.')">.</button>
-            <button class="num-btn" onclick="addNumber('0')">0</button>
             <button class="num-btn special" onclick="deleteNumber()">⌫</button>
+            <button class="num-btn" onclick="addNumber('0')">0</button>
+            <button class="num-btn special" onclick="checkAnswer()">OK</button>
         </div>
         
-        <div class="format-hint">Sisesta aeg nii: 6.50 või 12.05</div>
+        <div class="format-hint">Punkt lisatakse automaatselt</div>
 
         <div class="feedback" id="feedback"></div>
         
@@ -491,15 +491,57 @@
         function addNumber(num) {
             if (answered) return;
             const input = document.getElementById('time-input');
-            if (input.value.length < 5) {
-                input.value += num;
+            let value = input.value;
+            
+            // Don't add more if already complete (X.XX or XX.XX format)
+            if (value.length >= 5) return;
+            
+            // If there's already a dot, just add minute digits
+            if (value.includes('.')) {
+                const parts = value.split('.');
+                if (parts[1].length < 2) {
+                    input.value = value + num;
+                }
+                return;
+            }
+            
+            // No dot yet - we're entering hour
+            if (value.length === 0) {
+                // First digit
+                if (num >= '2' && num <= '9') {
+                    // Single digit hour 2-9, auto-add dot
+                    input.value = num + '.';
+                } else if (num === '1') {
+                    // Could be 1, 10, 11, or 12 - wait for next digit
+                    input.value = num;
+                }
+                // Ignore 0 as first digit (invalid hour)
+            } else if (value === '1') {
+                // Second digit after '1'
+                if (num === '0' || num === '1' || num === '2') {
+                    // Forms 10, 11, or 12 - complete hour
+                    input.value = value + num + '.';
+                } else if (num >= '3' && num <= '9') {
+                    // Hour is 1, this digit starts minutes
+                    input.value = '1.' + num;
+                }
+                // Ignore 0 here as it's handled above (forms 10)
             }
         }
 
         function deleteNumber() {
             if (answered) return;
             const input = document.getElementById('time-input');
-            input.value = input.value.slice(0, -1);
+            let value = input.value;
+            
+            if (value.length === 0) return;
+            
+            // If last char is a dot, remove it and the digit before
+            if (value.endsWith('.')) {
+                input.value = value.slice(0, -2);
+            } else {
+                input.value = value.slice(0, -1);
+            }
         }
 
         // Initialize clock face with numbers and tick marks
