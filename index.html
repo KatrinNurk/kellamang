@@ -367,33 +367,137 @@
 
         /* Mobile optimizations */
         @media (max-width: 500px) {
+            body {
+                padding: 8px;
+                min-height: 100dvh;
+            }
+
             h1 {
-                font-size: 1.8em;
+                font-size: 1.4em;
+                margin-bottom: 5px;
             }
             
             .game-container {
-                padding: 20px 15px;
-                border-radius: 20px;
+                padding: 10px;
+                border-radius: 15px;
+            }
+
+            .difficulty-selector {
+                margin: 5px 0;
+            }
+
+            .difficulty-selector label {
+                display: none;
+            }
+
+            .difficulty-selector select {
+                padding: 5px 10px;
+                font-size: 0.9em;
+            }
+
+            .instructions {
+                display: none;
+            }
+
+            .score-board {
+                margin: 8px 0;
+                padding: 8px;
+            }
+
+            .score-label {
+                font-size: 0.7em;
+            }
+
+            .score-value {
+                font-size: 1.3em;
+            }
+
+            .streak {
+                font-size: 1em;
+                margin: 5px 0;
+                min-height: 1.2em;
             }
 
             .clock-container {
-                width: 240px;
-                height: 240px;
+                width: 180px;
+                height: 180px;
+                margin: 8px auto;
+            }
+
+            .number {
+                font-size: 1.1em;
+            }
+
+            .hour-hand {
+                width: 6px;
+                height: 50px;
+                margin-left: -3px;
+            }
+
+            .minute-hand {
+                width: 4px;
+                height: 70px;
+                margin-left: -2px;
+            }
+
+            .center-dot {
+                width: 12px;
+                height: 12px;
+            }
+
+            .question {
+                font-size: 1.1em;
+                margin: 8px 0;
+            }
+
+            .time-input-container {
+                margin: 8px 0;
+                gap: 8px;
             }
 
             .time-text-input {
-                font-size: 1.6em;
-                width: 140px;
-                padding: 12px 15px;
+                font-size: 1.4em;
+                width: 100px;
+                padding: 8px 10px;
+                border-width: 3px;
             }
 
-            .num-btn {
-                padding: 15px;
-                font-size: 1.5em;
+            .check-btn {
+                padding: 8px 15px;
+                font-size: 1em;
             }
 
             .number-pad {
-                max-width: 240px;
+                max-width: 200px;
+                gap: 6px;
+                margin: 8px auto;
+            }
+
+            .num-btn {
+                padding: 10px;
+                font-size: 1.3em;
+                border-width: 2px;
+                border-radius: 10px;
+            }
+
+            .num-btn.special {
+                font-size: 1.1em;
+            }
+
+            .format-hint {
+                font-size: 0.75em;
+                margin-top: 5px;
+            }
+
+            .feedback {
+                font-size: 1.1em;
+                padding: 8px;
+                margin: 8px 0;
+            }
+
+            .next-btn {
+                padding: 10px 25px;
+                font-size: 1em;
             }
         }
     </style>
