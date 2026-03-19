@@ -663,7 +663,6 @@
         let total = 0;
         let streak = 0;
         let answered = false;
-        let lastCelebration = 0;
 
         // Capybara SVG with different costumes
         const capybaraBase = `
@@ -902,11 +901,8 @@
                 feedback.textContent = encouragements[Math.floor(Math.random() * encouragements.length)];
                 feedback.className = 'feedback show success';
                 
-                // Show dancing animal every 5 correct answers
-                if (correct % 5 === 0 && correct > lastCelebration) {
-                    lastCelebration = correct;
-                    setTimeout(() => showDancingAnimal(), 500);
-                }
+                // Show dancing capybara after every correct answer
+                setTimeout(() => showDancingAnimal(), 500);
             } else {
                 input.classList.add('wrong');
                 streak = 0;
