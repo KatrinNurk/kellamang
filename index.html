@@ -517,9 +517,14 @@
         }
 
         .dancing-animal {
-            font-size: 120px;
             animation: dance 0.8s ease-in-out infinite;
             display: inline-block;
+        }
+
+        .dancing-animal svg {
+            width: 180px;
+            height: 150px;
+            filter: drop-shadow(3px 3px 5px rgba(0,0,0,0.3));
         }
 
         .animal-message {
@@ -566,8 +571,9 @@
         }
 
         @media (max-width: 500px) {
-            .dancing-animal {
-                font-size: 80px;
+            .dancing-animal svg {
+                width: 120px;
+                height: 100px;
             }
             .animal-message {
                 font-size: 1.5em;
@@ -659,15 +665,73 @@
         let answered = false;
         let lastCelebration = 0;
 
-        // Dancing capybaras in costumes
-        const dancingAnimals = ['🦫👑', '🦫🎩', '🦫🕶️', '🦫🎀', '🦫🧣'];
+        // Capybara SVG with different costumes
+        const capybaraBase = `
+            <svg viewBox="0 0 100 80" width="150" height="120">
+                <!-- Body -->
+                <ellipse cx="50" cy="55" rx="35" ry="22" fill="#8B7355"/>
+                <!-- Head -->
+                <ellipse cx="50" cy="30" rx="25" ry="20" fill="#9C8465"/>
+                <!-- Snout -->
+                <ellipse cx="50" cy="38" rx="12" ry="8" fill="#A69279"/>
+                <!-- Nose -->
+                <ellipse cx="50" cy="35" rx="5" ry="3" fill="#4A3728"/>
+                <!-- Eyes -->
+                <circle cx="40" cy="25" r="4" fill="#1a1a1a"/>
+                <circle cx="60" cy="25" r="4" fill="#1a1a1a"/>
+                <circle cx="41" cy="24" r="1.5" fill="white"/>
+                <circle cx="61" cy="24" r="1.5" fill="white"/>
+                <!-- Ears -->
+                <ellipse cx="30" cy="15" rx="6" ry="4" fill="#8B7355"/>
+                <ellipse cx="70" cy="15" rx="6" ry="4" fill="#8B7355"/>
+                <!-- Legs -->
+                <ellipse cx="25" cy="72" rx="8" ry="6" fill="#7A6548"/>
+                <ellipse cx="75" cy="72" rx="8" ry="6" fill="#7A6548"/>
+                <!-- Cheeks -->
+                <circle cx="32" cy="35" r="5" fill="#D4A574" opacity="0.5"/>
+                <circle cx="68" cy="35" r="5" fill="#D4A574" opacity="0.5"/>
+        `;
+        
+        const costumes = [
+            // Crown
+            `<polygon points="50,2 45,12 40,5 35,12 30,8 35,18 65,18 70,8 65,12 60,5 55,12" fill="gold" stroke="#DAA520" stroke-width="1"/>
+             <circle cx="50" cy="8" r="3" fill="#FF6B6B"/>
+             </svg>`,
+            // Top hat
+            `<rect x="35" y="5" width="30" height="15" fill="#1a1a1a"/>
+             <rect x="30" y="18" width="40" height="5" fill="#1a1a1a"/>
+             <rect x="35" y="15" width="30" height="3" fill="#C9A227"/>
+             </svg>`,
+            // Sunglasses
+            `<rect x="32" y="22" width="15" height="10" rx="3" fill="#1a1a1a"/>
+             <rect x="53" y="22" width="15" height="10" rx="3" fill="#1a1a1a"/>
+             <rect x="47" y="25" width="6" height="2" fill="#1a1a1a"/>
+             <rect x="27" y="25" width="5" height="2" fill="#1a1a1a"/>
+             <rect x="68" y="25" width="5" height="2" fill="#1a1a1a"/>
+             </svg>`,
+            // Pink bow
+            `<ellipse cx="50" cy="8" rx="12" ry="6" fill="#FF69B4"/>
+             <ellipse cx="38" cy="8" rx="8" ry="5" fill="#FF69B4"/>
+             <ellipse cx="62" cy="8" rx="8" ry="5" fill="#FF69B4"/>
+             <circle cx="50" cy="8" r="4" fill="#FF1493"/>
+             </svg>`,
+            // Party hat
+            `<polygon points="50,0 35,20 65,20" fill="#9333EA"/>
+             <circle cx="50" cy="0" r="4" fill="#FBBF24"/>
+             <circle cx="42" cy="12" r="2" fill="#34D399"/>
+             <circle cx="50" cy="15" r="2" fill="#F472B6"/>
+             <circle cx="58" cy="10" r="2" fill="#60A5FA"/>
+             </svg>`
+        ];
+
+        const dancingAnimals = costumes.map(costume => capybaraBase + costume);
 
         // Show dancing animal celebration
         function showDancingAnimal() {
             const popup = document.getElementById('animal-popup');
             const animalEl = document.getElementById('dancing-animal');
             const randomAnimal = dancingAnimals[Math.floor(Math.random() * dancingAnimals.length)];
-            animalEl.textContent = randomAnimal;
+            animalEl.innerHTML = randomAnimal;
             popup.classList.add('show');
             
             setTimeout(() => {
