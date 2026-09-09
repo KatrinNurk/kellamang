@@ -901,8 +901,10 @@
                 feedback.textContent = encouragements[Math.floor(Math.random() * encouragements.length)];
                 feedback.className = 'feedback show success';
                 
-                // Show dancing capybara after every correct answer
-                setTimeout(() => showDancingAnimal(), 500);
+                // Show dancing capybara after every 5 correct answers
+                if (correct % 5 === 0) {
+                    setTimeout(() => showDancingAnimal(), 500);
+                }
             } else {
                 input.classList.add('wrong');
                 streak = 0;
