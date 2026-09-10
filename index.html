@@ -250,6 +250,23 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        .next-btn {
+            padding: 10px 15px;
+            font-size: 1em;
+            font-family: inherit;
+            border: none;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .next-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
         /* Time Input Styles */
         .time-input-container {
             display: flex;
@@ -569,6 +586,11 @@
                 margin-top: 6px;
             }
 
+            .next-btn {
+                padding: 6px 10px;
+                font-size: 0.85em;
+            }
+
             .number-pad {
                 max-width: 180px;
                 gap: 5px;
@@ -743,6 +765,7 @@
                    maxlength="5"
                    autocomplete="off"
                    readonly>
+                 <button type="button" class="next-btn" onclick="newRound()">Järgmine →</button>
         </div>
 
         <div class="number-pad">
