@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>⏰ Mis kell on?</title>
     <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Confetti library for celebrations -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -20,6 +22,33 @@
             flex-direction: column;
             align-items: center;
             padding: 20px;
+            overflow: hidden;
+        }
+
+        /* Floating background elements */
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .floating-item {
+            position: absolute;
+            font-size: 24px;
+            opacity: 0.6;
+            animation: float 15s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
         }
 
         h1 {
@@ -27,6 +56,7 @@
             text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
             margin-bottom: 10px;
             font-size: 2.5em;
+            z-index: 1;
         }
 
         .game-container {
@@ -37,6 +67,28 @@
             text-align: center;
             max-width: 500px;
             width: 100%;
+            z-index: 1;
+            position: relative;
+        }
+
+        /* Streak fire indicator */
+        .streak-indicator {
+            position: absolute;
+            top: -20px;
+            right: 20px;
+            font-size: 30px;
+            transition: all 0.3s ease;
+            filter: drop-shadow(0 0 10px orange);
+        }
+
+        .streak-indicator.small { font-size: 25px; }
+        .streak-indicator.medium { font-size: 35px; }
+        .streak-indicator.large { font-size: 45px; animation: firePulse 0.5s ease-in-out infinite; }
+        .streak-indicator.mega { font-size: 55px; animation: firePulse 0.3s ease-in-out infinite; }
+
+        @keyframes firePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
         }
 
         .clock-container {
@@ -44,6 +96,31 @@
             width: 280px;
             height: 280px;
             margin: 20px auto;
+        }
+
+        /* Clock bounce animation */
+        .clock-container.bounce {
+            animation: clockBounce 0.5s ease;
+        }
+
+        @keyframes clockBounce {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.1) rotate(-3deg); }
+            50% { transform: scale(1.05) rotate(3deg); }
+            75% { transform: scale(1.08) rotate(-2deg); }
+        }
+
+        /* Clock wiggle for wrong answer */
+        .clock-container.wiggle {
+            animation: clockWiggle 0.5s ease;
+        }
+
+        @keyframes clockWiggle {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-10px); }
+            40% { transform: translateX(10px); }
+            60% { transform: translateX(-7px); }
+            80% { transform: translateX(7px); }
         }
 
         .clock {
@@ -173,23 +250,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .next-btn {
-            padding: 10px 15px;
-            font-size: 1em;
-            font-family: inherit;
-            border: none;
-            border-radius: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .next-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-        }
-
         /* Time Input Styles */
         .time-input-container {
             display: flex;
@@ -273,6 +333,20 @@
             color: #667eea;
         }
 
+        .game-filters {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .period-cue {
+            min-height: 28px;
+            margin: 8px 0 0;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #4a5568;
+        }
+
         .score-inline {
             display: flex;
             gap: 15px;
@@ -309,6 +383,32 @@
         @keyframes pulse {
             from { transform: scale(1); }
             to { transform: scale(1.2); }
+        }
+
+        @media (max-height: 950px) and (min-width: 501px) {
+            body {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 2em;
+                margin-bottom: 5px;
+            }
+
+            .game-container {
+                padding: 20px;
+            }
+
+            .clock-container,
+            .time-input-container {
+                margin-top: 10px;
+                margin-bottom: 10px;
+            }
+
+            .number-pad {
+                margin-top: 8px;
+                margin-bottom: 8px;
+            }
         }
 
         .instructions {
@@ -391,6 +491,16 @@
                 font-size: 0.8em;
             }
 
+            .game-filters {
+                gap: 5px;
+            }
+
+            .period-cue {
+                min-height: 22px;
+                margin-top: 4px;
+                font-size: 0.9em;
+            }
+
             .score-inline {
                 gap: 10px;
             }
@@ -457,11 +567,6 @@
                 padding: 8px 20px;
                 font-size: 0.9em;
                 margin-top: 6px;
-            }
-
-            .next-btn {
-                padding: 6px 10px;
-                font-size: 0.85em;
             }
 
             .number-pad {
@@ -582,17 +687,30 @@
     </style>
 </head>
 <body>
+    <!-- Floating background elements -->
+    <div class="floating-elements" id="floating-elements"></div>
+
     <h1>⏰ Mis kell on?</h1>
 
     <div class="game-container">
+        <!-- Streak fire indicator -->
+        <div class="streak-indicator" id="streak-fire"></div>
+
         <div class="difficulty-selector">
-            <select id="difficulty" onchange="newRound()">
-                <option value="easy">Täistunnid</option>
-                <option value="medium" selected>Pooltunnid</option>
-                <option value="quarter">Veerandtunnid</option>
-                <option value="hard">5min</option>
-                <option value="expert">Minutid</option>
-            </select>
+            <div class="game-filters">
+                <select id="difficulty" aria-label="Raskusaste" onchange="newRound()">
+                    <option value="easy">Täistunnid</option>
+                    <option value="medium" selected>Pooltunnid</option>
+                    <option value="quarter">Veerandtunnid</option>
+                    <option value="hard">5min</option>
+                    <option value="expert">Minutid</option>
+                </select>
+                <select id="period-filter" aria-label="Päevaaeg" onchange="newRound()">
+                    <option value="both" selected>🌞 AM + 🌙 PM</option>
+                    <option value="am">🌞 AM</option>
+                    <option value="pm">🌙 PM</option>
+                </select>
+            </div>
             <div class="score-inline">
                 <div class="score-item">
                     <span class="score-label">Õiged:</span>
@@ -606,8 +724,9 @@
         </div>
 
         <div class="streak" id="streak"></div>
+        <div class="period-cue" id="period-cue" aria-live="polite"></div>
 
-        <div class="clock-container">
+        <div class="clock-container" id="clock-container">
             <div class="clock">
                 <div class="clock-face" id="clock-face"></div>
                 <div class="hand hour-hand" id="hour-hand"></div>
@@ -624,7 +743,6 @@
                    maxlength="5"
                    autocomplete="off"
                    readonly>
-            <button class="next-btn" id="next-btn" onclick="newRound()">Järgmine →</button>
         </div>
 
         <div class="number-pad">
@@ -658,11 +776,120 @@
         // Game state
         let currentHour = 0;
         let currentMinute = 0;
+        let currentPeriod = 'am';
         let score = 0;
         let correct = 0;
         let total = 0;
         let streak = 0;
         let answered = false;
+        let nextRoundTimer = null;
+
+        const AUTO_ADVANCE_DELAY = 2000;
+
+        // Sound effects using free audio
+        const sounds = {
+            correct: new Audio('https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3'),
+            wrong: new Audio('https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3'),
+            celebration: new Audio('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3')
+        };
+        // Set volume
+        Object.values(sounds).forEach(s => s.volume = 0.3);
+
+        // Create floating background elements
+        function createFloatingElements() {
+            const container = document.getElementById('floating-elements');
+            const emojis = ['⭐', '✨', '💫', '🌟', '🎈', '🎉', '💖', '🌈', '☁️', '🦋'];
+
+            for (let i = 0; i < 15; i++) {
+                const elem = document.createElement('div');
+                elem.classList.add('floating-item');
+                elem.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                elem.style.left = Math.random() * 100 + '%';
+                elem.style.animationDelay = Math.random() * 15 + 's';
+                elem.style.animationDuration = (12 + Math.random() * 8) + 's';
+                container.appendChild(elem);
+            }
+        }
+
+        // Fire confetti celebration
+        function fireConfetti() {
+            const count = 100;
+            const defaults = { origin: { y: 0.7 }, zIndex: 1000 };
+
+            function fire(particleRatio, opts) {
+                confetti({
+                    ...defaults,
+                    ...opts,
+                    particleCount: Math.floor(count * particleRatio)
+                });
+            }
+
+            fire(0.25, { spread: 26, startVelocity: 55 });
+            fire(0.2, { spread: 60 });
+            fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
+            fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
+            fire(0.1, { spread: 120, startVelocity: 45 });
+        }
+
+        // Update streak fire indicator
+        function updateStreakFire() {
+            const fire = document.getElementById('streak-fire');
+            if (streak === 0) {
+                fire.textContent = '';
+                fire.className = 'streak-indicator';
+            } else if (streak >= 1 && streak < 3) {
+                fire.textContent = '🔥';
+                fire.className = 'streak-indicator small';
+            } else if (streak >= 3 && streak < 5) {
+                fire.textContent = '🔥';
+                fire.className = 'streak-indicator medium';
+            } else if (streak >= 5 && streak < 10) {
+                fire.textContent = '🔥🔥';
+                fire.className = 'streak-indicator large';
+            } else {
+                fire.textContent = '🔥🔥🔥';
+                fire.className = 'streak-indicator mega';
+            }
+        }
+
+        // Animate clock
+        function animateClock(type) {
+            const container = document.getElementById('clock-container');
+            container.classList.remove('bounce', 'wiggle');
+            void container.offsetWidth; // Trigger reflow
+            container.classList.add(type);
+        }
+
+        // Create sparkle burst effect
+        function createSparkles() {
+            const container = document.querySelector('.game-container');
+            for (let i = 0; i < 8; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.textContent = ['✨', '⭐', '💫', '🌟'][Math.floor(Math.random() * 4)];
+                sparkle.style.cssText = `
+                    position: absolute;
+                    font-size: 24px;
+                    pointer-events: none;
+                    z-index: 100;
+                    animation: sparkleFloat 1s ease-out forwards;
+                    left: ${50 + (Math.random() - 0.5) * 60}%;
+                    top: ${30 + (Math.random() - 0.5) * 40}%;
+                `;
+                container.appendChild(sparkle);
+                setTimeout(() => sparkle.remove(), 1000);
+            }
+        }
+
+        // Add sparkle animation dynamically
+        const sparkleStyle = document.createElement('style');
+        sparkleStyle.textContent = `
+            @keyframes sparkleFloat {
+                0% { transform: scale(0) translateY(0); opacity: 1; }
+                50% { transform: scale(1.5) translateY(-20px); opacity: 1; }
+                100% { transform: scale(0) translateY(-40px); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(sparkleStyle);
 
         // Capybara SVG with different costumes
         const capybaraBase = `
@@ -811,8 +1038,12 @@
         // Generate random time based on difficulty
         function generateTime() {
             const difficulty = document.getElementById('difficulty').value;
+            const periodFilter = document.getElementById('period-filter').value;
             let hour = Math.floor(Math.random() * 12) + 1;
             let minute = 0;
+            const period = periodFilter === 'both'
+                ? (Math.random() < 0.5 ? 'am' : 'pm')
+                : periodFilter;
             
             switch (difficulty) {
                 case 'easy':
@@ -832,14 +1063,19 @@
                     break;
             }
             
-            return { hour, minute };
+            return { hour, minute, period };
         }
 
         // Format time as string with period
-        function formatTime(hour, minute) {
+        function formatTime(hour, minute, period = '') {
             const h = hour.toString();
             const m = minute.toString().padStart(2, '0');
-            return `${h}.${m}`;
+            return `${h}.${m}${period ? ` ${period.toUpperCase()}` : ''}`;
+        }
+
+        function updatePeriodCue() {
+            const cue = document.getElementById('period-cue');
+            cue.textContent = currentPeriod === 'am' ? '🌞 AM' : '🌙 PM';
         }
 
         // Parse user input
@@ -869,27 +1105,44 @@
         // Check answer
         function checkAnswer() {
             if (answered) return;
-            
+
             const input = document.getElementById('time-input');
             const userTime = parseTimeInput(input.value);
-            
+
             if (!userTime) {
                 alert('Palun sisesta kehtiv aeg, näiteks 6.50 või 12.05');
                 return;
             }
-            
+
             answered = true;
             total++;
-            
+
             const feedback = document.getElementById('feedback');
             const isCorrect = userTime.hour === currentHour && userTime.minute === currentMinute;
-            
+
             if (isCorrect) {
                 input.classList.add('correct');
                 correct++;
                 streak++;
                 score += 10 * streak;
                 
+                // Sound effect
+                sounds.correct.currentTime = 0;
+                sounds.correct.play().catch(() => {});
+
+                // Visual effects
+                animateClock('bounce');
+                createSparkles();
+                updateStreakFire();
+
+                // Big celebration every 5 correct answers
+                if (correct % 5 === 0) {
+                    fireConfetti();
+                    sounds.celebration.currentTime = 0;
+                    sounds.celebration.play().catch(() => {});
+                    setTimeout(() => showDancingAnimal(), 500);
+                }
+
                 const encouragements = [
                     "🎉 Fantastiline!",
                     "⭐ Suurepärane!",
@@ -900,27 +1153,34 @@
                 ];
                 feedback.textContent = encouragements[Math.floor(Math.random() * encouragements.length)];
                 feedback.className = 'feedback show success';
-                
-                // Show dancing capybara after every 5 correct answers
-                if (correct % 5 === 0) {
-                    setTimeout(() => showDancingAnimal(), 500);
-                }
+
             } else {
                 input.classList.add('wrong');
                 streak = 0;
                 
+                // Sound effect
+                sounds.wrong.currentTime = 0;
+                sounds.wrong.play().catch(() => {});
+
+                // Visual effects
+                animateClock('wiggle');
+                updateStreakFire();
+
                 const encouragements = [
                     "😊 Proovi veel!",
                     "💪 Sa saad hakkama!",
                     "🌈 Ära anna alla!",
                     "🎯 Peaaegu!"
                 ];
-                feedback.textContent = `${encouragements[Math.floor(Math.random() * encouragements.length)]} Õige aeg oli ${formatTime(currentHour, currentMinute)}`;
+                feedback.textContent = `${encouragements[Math.floor(Math.random() * encouragements.length)]} Õige aeg oli ${formatTime(currentHour, currentMinute, currentPeriod)}`;
                 feedback.className = 'feedback show error';
             }
             
             updateScore();
-            document.getElementById('next-btn').classList.add('show');
+            nextRoundTimer = setTimeout(() => {
+                nextRoundTimer = null;
+                newRound();
+            }, AUTO_ADVANCE_DELAY);
         }
 
         // Update score display
@@ -938,13 +1198,20 @@
 
         // Start new round
         function newRound() {
+            if (nextRoundTimer) {
+                clearTimeout(nextRoundTimer);
+                nextRoundTimer = null;
+            }
+
             answered = false;
             
             const time = generateTime();
             currentHour = time.hour;
             currentMinute = time.minute;
+            currentPeriod = time.period;
             
             setClockHands(currentHour, currentMinute);
+            updatePeriodCue();
             
             const input = document.getElementById('time-input');
             input.value = '';
@@ -952,25 +1219,21 @@
             input.focus();
             
             document.getElementById('feedback').classList.remove('show');
-            document.getElementById('next-btn').classList.remove('show');
         }
 
         // Handle Enter key
         document.addEventListener('DOMContentLoaded', function() {
             const input = document.getElementById('time-input');
             input.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    if (answered) {
-                        newRound();
-                    } else {
-                        checkAnswer();
-                    }
+                if (e.key === 'Enter' && !answered) {
+                    checkAnswer();
                 }
             });
         });
 
         // Initialize game
         function init() {
+            createFloatingElements();
             initClockFace();
             newRound();
         }
