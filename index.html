@@ -1066,9 +1066,17 @@
             return { hour, minute, period };
         }
 
+        function to24Hour(hour, period) {
+            if (period === 'pm') {
+                return hour === 12 ? 12 : hour + 12;
+            }
+
+            return hour === 12 ? 0 : hour;
+        }
+
         // Format time as string with period
         function formatTime(hour, minute, period = '') {
-            const h = hour.toString();
+            const h = (period ? to24Hour(hour, period) : hour).toString();
             const m = minute.toString().padStart(2, '0');
             return `${h}.${m}${period ? ` ${period.toUpperCase()}` : ''}`;
         }
@@ -1095,7 +1103,7 @@
                 return null;
             }
             
-            if (hour < 1 || hour > 12 || minute < 0 || minute > 59) {
+            if (hour < 0 || hour > 23 || minute < 0 || minute > 59) {
                 return null;
             }
             
@@ -1110,7 +1118,7 @@
             const userTime = parseTimeInput(input.value);
 
             if (!userTime) {
-                alert('Palun sisesta kehtiv aeg, näiteks 6.50 või 12.05');
+                alert('Palun sisesta kehtiv aeg, näiteks 6.50 või 13.30');
                 return;
             }
 
@@ -1118,7 +1126,8 @@
             total++;
 
             const feedback = document.getElementById('feedback');
-            const isCorrect = userTime.hour === currentHour && userTime.minute === currentMinute;
+            const expectedHour = to24Hour(currentHour, currentPeriod);
+            const isCorrect = userTime.hour === expectedHour && userTime.minute === currentMinute;
 
             if (isCorrect) {
                 input.classList.add('correct');
@@ -1215,6 +1224,7 @@
             
             const input = document.getElementById('time-input');
             input.value = '';
+            input.placeholder = currentPeriod === 'am' ? '6.50' : '13.30';
             input.classList.remove('correct', 'wrong');
             input.focus();
             
